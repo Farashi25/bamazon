@@ -19,6 +19,8 @@
   "dependencies": {
     "faker": "^4.1.0",
     "inquirer": "^5.2.0",
-    "mysql": "^2.15.0"
+    "inquirer-confirm": "^0.2.2",
+    "mysql": "^2.15.0",
+    "table": "^4.0.3"
   }
 }
