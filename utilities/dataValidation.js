@@ -1,27 +1,15 @@
-function validateNumbers(input) {
-    if (typeof input !== 'number') {
-        console.log('it is not a #');
-        // return;
-    }
-}
+//Validate user input is not empty and is a number
+ var validate = input => !!input;
+ var validateNumber = input => validate(input) && !isNaN(parseInt(input));
+ var validatePositive = input => validateNumber(input) && input > 0;
 
-function emptyValidator(input) {
-    return input !== '';
-}
-
-
-function validateString(input) {
-    if (typeof input !== 'string') {
-        console.log('it is not a string');
-        // return;
-    }
-}
+//Validate user input is not empty and is a word
+ var validateWord = input => validate(input) && isNaN(parseInt(input));
 
 
 
 module.exports = {
-    validateNumbers: validateNumbers,
-    validateString: validateString,
-    emptyValidator: emptyValidator
+    validatePositive: validatePositive,
+    validateWord: validateWord
 };
 

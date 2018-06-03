@@ -7,27 +7,27 @@ var displayOptions = function () {
             name: "option",
             type: "list",
             message: 'What will you like to do?.',
-            choices: ['View Products for Sale', 'View Low Inventory', 'Add to Inventory', 'Add New Product', 'EXIT Manager Role']
+            choices: ['VIEW ALL PRODUCTS', 'VIEW LOW INVENTORY', 'REPLENISH INVENTORY', 'ADD A NEW PRODUCT', 'EXIT MANAGER ROLE']
         }])
         .then(function (answer) {
             switch (answer.option) {
-                case "View Products for Sale":
+                case "VIEW ALL PRODUCTS":
                     managerRole.displayProducts();
                     break;
 
-                case "View Low Inventory":
+                case "VIEW LOW INVENTORY":
                     managerRole.displayLowItems();
                     break;
 
-                case "Add to Inventory":
+                case "REPLENISH INVENTORY":
                     managerRole.replenishInventory();
                     break;
 
-                case "Add New Product":
+                case "ADD A NEW PRODUCT":
                     managerRole.addNewProduct();
                     break;
 
-                case "EXIT Manager Role":
+                case "EXIT MANAGER ROLE":
                     index.selectRole();
                     break;
             }

@@ -8,15 +8,15 @@ var displayOptions = function () {
             name: "option",
             type: "list",
             message: 'What will you like to do?.',
-            choices: ['Enter Store', 'EXIT customer role']
+            choices: ['ENTER STORE', 'EXIT CUSTOMER ROLE']
         }])
         .then(function (answer) {
             switch (answer.option) {
-                case 'Enter Store':
+                case 'ENTER STORE':
                     customerRole.displayProducts();
                     break;
 
-                case 'EXIT customer role':
+                case 'EXIT CUSTOMER ROLE':
                     index.selectRole();
                     break;
             }

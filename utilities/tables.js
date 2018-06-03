@@ -13,7 +13,7 @@ function makeSupervisorTable(res) {
         dataRow.push(d.department_name);
         dataRow.push((Number(d.over_head_costs)).toFixed(2));
         dataRow.push((Number(d.product_sales)).toFixed(2));
-        dataRow.push(((Number(d.over_head_costs)) - (Number(d.product_sales))).toFixed(2));
+        dataRow.push(((Number(d.product_sales)) - (Number(d.over_head_costs))).toFixed(2));
         dataRow.push();
         data.push(dataRow);
     });
@@ -81,12 +81,35 @@ function makeManagerTables(res) {
     console.log(output);
 }
 
+function makeProductTable(res) {
+    console.log('      S E L E C T E D  P R O D U C T');
+    data = [
+        ['Item ID', res[0].item_id],
+        ['Product Name', res[0].product_name],
+        ['Unit Price', '$' + res[0].price]
+    ];
 
+    config = {
+        columns: {
+            0: {
+                width: 15,
+                padding: 0.3
+            },
+            1: {
+                width: 25,
+                padding: 0.3
+            },
+        }
+    };
 
-function makeOrderTable(product_name, quantity, price) {
+    output = table(data, config);
+    console.log(output);
+}
+
+function makeOrderSummaryTable(product_name, quantity, price) {
     console.log('      O R D E R  S U M M A R Y');
     data = [
-        ['Product', product_name],
+        ['Product Name', product_name],
         ['Quantity', quantity],
         ['Unit Price', '$' + price],
         ['Order Total', '$' + (quantity * price).toFixed(2)]
@@ -108,6 +131,8 @@ function makeOrderTable(product_name, quantity, price) {
     output = table(data, config);
     console.log(output);
 }
+
+
 
 function makeProductsTable(res) {
     data = [
@@ -142,7 +167,8 @@ function makeProductsTable(res) {
 
 module.exports = {
     makeManagerTables: makeManagerTables,
-    makeOrderTable: makeOrderTable,
     makeProductsTable: makeProductsTable,
+    makeProductTable: makeProductTable,
+    makeOrderSummaryTable: makeOrderSummaryTable,
     makeSupervisorTable: makeSupervisorTable
 };

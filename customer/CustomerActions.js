@@ -1,11 +1,11 @@
 var Order = require('./orderProcessor'),
     tables = require('../utilities/tables'),
+    confirm = require('inquirer-confirm'),
+    message = require('../utilities/feedbacks'),
     inquirer = require('inquirer'),
-    validate = require('../utilities/dataValidation'),
     customer = require('./bamazonCustomer'),
-    connection = require('../utilities/db_connection'),
-    inquirerConfirm = require('inquirer-confirm');
-
+    validator = require('../utilities/dataValidation'),
+    connection = require('../utilities/db_connection');
 
 
 function displayProducts() {
@@ -15,54 +15,56 @@ function displayProducts() {
         console.log(`      W E L C O M E  T O  B A M A Z O N!!`);
         tables.makeProductsTable(res);
         console.log("\n");
-        takeOptions();
+        confirmPurchase();
+        // getProductID();
     });
 }
 
 
-function takeOptions() {
-    var confirm = require('inquirer-confirm');
+function confirmPurchase() {
     confirm("Please confirm. Do you still want to buy a product?")
         .then(function confirmed() {
-            promptBuyer();
+            getProductID();
         }, function cancelled() {
-            console.log('We are sad to see you go. Please come back sometimes.');
+            console.log("\x1b[34m", `Thanks for your time. Please come back again.`);
             customer.displayOptions();
         });
 }
 
-
-function promptBuyer() {
+function getProductID() {
+    var itemID;
     inquirer.prompt([{
-                message: "Enter the ID of the product you will like to buy?",
-                name: 'item_id',
-                type: 'input',
-                // validate: item_id => typeof item_id === 'number'
-                validate: validate.emptyValidator
-            },
-            {
-                name: "order_quantity",
-                message: "How many will you like to buy?",
-                type: 'input',
-                // validate: item_id => typeof item_id === 'number'
-                validate: validate.emptyValidator
-            }
-        ])
+            name: "item_id",
+            message: "Enter the ID of the product you will like to buy?",
+            validate: validator.validatePositive
+        }])
         .then(function (answer) {
-            var query = "SELECT * FROM products WHERE ?";
-            connection.query(query, {
-                item_id: answer.item_id
-            }, function (err, res) {
-                if (err) {
-                    console.log('\x1b[31m','SORRY!! You must have entered an invalid item ID. Try again!\n'); 
-                }else{
-                var order = new Order(answer.item_id, res[0].product_name, Number(answer.order_quantity), res[0].price);
-                order.checkInventory(res[0].stock_quantity, res[0].product_sales);
-                }
+            itemID = parseInt(answer.item_id);
+            connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
+                !res.length ? (message.info(), Order.customerReroute()) : (tables.makeProductTable(res),
+                    setTimeout(promptForQuantity, 1000, res))
             });
+
         });
-    }
+}
+
+
+
+function promptForQuantity(res) {
+    var item = res[0];
+    inquirer.prompt([{
+            name: "qty",
+            message: "How many will you like to buy?",
+            validate: validator.validatePositive
+        }])
+        .then(function (answer) {
+            var order = new Order(item.item_id, item.product_name, Number(answer.qty), item.price);
+            order.checkInventory(item.stock_quantity, item.product_sales);
+
+        });
+}
+
+
 
 
 module.exports.displayProducts = displayProducts;
-

@@ -9,18 +9,18 @@ var displayOptions = function () {
             name: "option",
             type: "list",
             message: 'What will you like to do?.',
-            choices: ['View Product Sales by Department', 'Create New Department', 'EXIT Supervisor Role']
+            choices: ['VIEW SALES BY DEPARTMENT', 'CREATE NEW DEPARTMENT', 'EXIT SUPERVISOR ROLE']
         }])
         .then(function (answer) {
             switch (answer.option) {
-                case "View Product Sales by Department":
+                case "VIEW SALES BY DEPARTMENT":
                     supervisorRole.displaySales();
                     break;
 
-                case "Create New Department":
+                case "CREATE NEW DEPARTMENT":
                     supervisorRole.createDepartment();
                     break;
-                case "EXIT Supervisor Role":
+                case "EXIT SUPERVISOR ROLE":
                     index.selectRole();
                     break;
             }
