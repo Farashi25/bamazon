@@ -6,61 +6,52 @@ var connection = require('../utilities/db_connection'),
     message = require('../utilities/feedbacks');
 
 
-function Order(item_id, productName, quantity, price) {
-    this.item_id = item_id;
-    this.productName = productName;
-    this.quantity = quantity;
+function Order(id, name, qty, price) {
+    this.id = id;
+    this.name = name;
+    this.qty = qty;
     this.price = (Number(price)).toFixed(2);
-    this.sales = (Number(this.price * this.quantity)).toFixed(2);
+    this.sales = (Number(this.price * this.qty)).toFixed(2);
 }
 
 
-Order.prototype.checkInventory = function (stock_quantity, product_sales) {
-    if (this.quantity > stock_quantity) {
-        console.log("\x1b[34m", `Sorry, we are low on stock. We only have ${stock_quantity} available.\n`);
-        setTimeout(customerReroute, 2000);
-    } else {
-        console.log(`\n`);
-        console.log("\x1b[34m", `ORDER CONFIRMATION! \nYour order for ${this.productName} has been placed. See details below:`);
-        this.takeOrder(stock_quantity, product_sales);
-    }
+Order.prototype.checkInventory = function (qty, sales) {
+    this.qty > qty ? (message.lowStock(qty), setTimeout(customerReroute, 2000)) :
+        (message.confirmOrder(this.name), this.takeOrder(qty, sales));
 };
 
 
-Order.prototype.takeOrder = function (stock_quantity, product_sales) {
-    tables.makeOrderSummaryTable(this.productName, this.quantity, this.price);
-    this.updateStock_quantity(stock_quantity, product_sales);
+Order.prototype.takeOrder = function (qty, sales) {
+    tables.makeOrderSummaryTable(this.name, this.qty, this.price);
+    this.updateStock_quantity(qty, sales);
 };
 
 
-Order.prototype.updateStock_quantity = function (stock_quantity, product_sales) {
-    var newStock_Quantity = stock_quantity - this.quantity;
-    // console.log(`Updating product quantity...\n`);
-    var query = connection.query(
-        "UPDATE products SET ? WHERE ?", [{
+Order.prototype.updateStock_quantity = function (qty, sales) {
+    var newStock_Quantity = qty - this.qty;
+    var query = connection.query("UPDATE products SET ? WHERE ?", [{
                 stock_quantity: newStock_Quantity
             },
             {
-                item_id: this.item_id
+                item_id: this.id
             }
         ],
         function (err, res) {
-            // console.log(res.affectedRows + " products updated!\n");
         }
     );
-    this.updateProduct_Sales(product_sales);
+    this.updateProduct_Sales(sales);
 };
 
-Order.prototype.updateProduct_Sales = function (product_sales) {
+
+Order.prototype.updateProduct_Sales = function (sales) {
     var query = connection.query("UPDATE products SET ? WHERE ?", [{
-                product_sales: product_sales + Number(this.sales)
+                product_sales: sales + Number(this.sales)
             },
             {
-                item_id: this.item_id
+                item_id: this.id
             }
         ],
         function (err, res) {
-
         }
     );
     setTimeout(customerReroute, 2000);
@@ -76,7 +67,7 @@ function customerReroute() {
         }])
         .then(function (answer) {
             answer.actions === 'PURCHASE A PRODUCT' ? customer.displayProducts() :
-                 (console.log("\x1b[34m", `Thanks for your time. Please come back again.\n`), index.selectRole())
+                (message.goodbye(), index.selectRole())
         });
 }
 

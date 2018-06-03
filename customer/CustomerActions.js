@@ -16,7 +16,6 @@ function displayProducts() {
         tables.makeProductsTable(res);
         console.log("\n");
         confirmPurchase();
-        // getProductID();
     });
 }
 
@@ -26,7 +25,7 @@ function confirmPurchase() {
         .then(function confirmed() {
             getProductID();
         }, function cancelled() {
-            console.log("\x1b[34m", `Thanks for your time. Please come back again.`);
+            message.goodbye();
             customer.displayOptions();
         });
 }
@@ -63,8 +62,6 @@ function promptForQuantity(res) {
 
         });
 }
-
-
 
 
 module.exports.displayProducts = displayProducts;
