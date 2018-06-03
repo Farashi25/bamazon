@@ -9,30 +9,27 @@ var connection = require('../utilities/db_connection'),
 
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
-        err ? (message.dbError(), reroute()) :
-        (console.log(` I N V E N T O R Y  `),
-        tables.makeManagerTables(res),
-        setTimeout(reroute, 2000))
+        var tableType = 'inventory';
+        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
+                setTimeout(reroute, 2000));
     });
 }
 
 
 function displayLowItems() {
+    var tableType = 'lowInventory';
     connection.query("SELECT * FROM products WHERE stock_quantity < 20", function (err, res) {
-        err ? (message.dbError(), reroute()) :
-        (console.log(`L O W   I N V E N T O R Y  `),
-        tables.makeManagerTables(res),
-        setTimeout(reroute, 2000))
+        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
+                setTimeout(reroute, 2000));
     });
 }
 
 
 function replenishInventory() {
+    var tableType = 'inventory';
     connection.query("SELECT * FROM products", function (err, res) {
-        err ? (message.dbError(), reroute()) :
-        (console.log(`                I N V E N T O R Y  `),
-        tables.makeManagerTables(res),
-        setTimeout(promptManager, 1000))
+        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
+                setTimeout(promptManager, 1000));
     });
 
 }
@@ -47,16 +44,14 @@ function promptManager() {
         }])
         .then(function (answer) {
             itemID = parseInt(answer.item_id);
-                connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
-                    !res.length? (message.info(), reroute()) :
-                    (console.log(` P R O D U C T  T O  B E  R E O R D E R E D  `),
-                    tables.makeManagerTables(res),
-                    setTimeout(promptForQuantity, 1000, itemID, res[0].stock_quantity))
-                });
+            var tableType = 'reorder';
+            connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
+                !res.length ? (message.info(), reroute()) :(tables.makeManagerTables(res,tableType),
+                        setTimeout(promptForQuantity, 1000, itemID, res[0].stock_quantity));
+            });
 
         });
 }
-
 
 
 function promptForQuantity(id, qty) {
@@ -66,8 +61,7 @@ function promptForQuantity(id, qty) {
             validate: validator.validatePositive
         }])
         .then(function (answer) {
-            var query = connection.query(
-                "UPDATE products SET ? WHERE ?", [{
+            var query = connection.query("UPDATE products SET ? WHERE ?", [{
                         stock_quantity: qty + Number(answer.quantity)
                     },
                     {
@@ -87,22 +81,18 @@ function addNewProduct() {
     var newProduct;
     inquirer.prompt([{
             name: "product",
-            type: 'input',
             message: "Enter new product name.",
             validate: validator.validateWord
         }, {
             name: "department",
-            type: 'input',
             message: "Enter department.",
             validate: validator.validateWord
         }, {
             name: "price",
-            type: 'input',
             message: "Enter price.",
             validate: validator.validatePositive
         }, {
             name: "quantity",
-            type: 'input',
             message: "Enter quantity.",
             validate: validator.validatePositive
         }])
@@ -137,8 +127,6 @@ function reroute() {
                 index.selectRole();
         });
 }
-
-
 
 
 module.exports = {

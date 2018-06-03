@@ -26,14 +26,14 @@ var dupDepartment = () => console.log('\x1b[31m', 'Department Already Exist\n');
 var addDepartment = (row, name) => console.log("\x1b[32m", `${row} Department name: ${name} has been created.\n`);
 
 module.exports = {
-    lowStock: lowStock,
     info: info,
     goodbye: goodbye,
-    confirmOrder: confirmOrder,
     dbError: dbError,
+    lowStock: lowStock,
     dupProduct: dupProduct,
     addProduct: addProduct,
-    confirmReorder: confirmReorder,
+    confirmOrder: confirmOrder,
     dupDepartment: dupDepartment,
-    addDepartment: addDepartment
+    addDepartment: addDepartment,
+    confirmReorder: confirmReorder
 };

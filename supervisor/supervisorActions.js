@@ -13,10 +13,8 @@ function displaySales() {
     LEFT JOIN products ON departments.department_name = products.department_name
     ORDER BY products.product_sales DESC`;
     connection.query(query, function (err, res) {
-        err ? message.dbError() :
-            (console.log(`         S A L E S  B Y  D E P A R T M E N T`),
-        tables.makeSupervisorTable(res),
-        console.log("\n"))
+        var tableType = 'sales';
+        err ? message.dbError() :tables.makeSupervisorTable(res, tableType);
     });
     setTimeout(reroute, 2000);
 }

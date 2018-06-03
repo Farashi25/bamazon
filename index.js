@@ -19,6 +19,7 @@ function selectRole() {
             } else if (answer.user === 'SUPERVISOR') {
                 supervisor.displayOptions();
             } else {
+                console.log('You Are Signed Out!');
                 process.exit();
             }
         });
