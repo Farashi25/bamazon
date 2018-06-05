@@ -50,9 +50,9 @@ function makeSupervisorTable(res) {
 
 function makeManagerTables(res, type) {
     console.log("\n");
-    'reorder' ? console.log(` P R O D U C T  T O  B E  R E O R D E R E D  `):
-        'inventory' ? console.log(`                I N V E N T O R Y  `) :
-        'lowInventory' ? console.log(`L O W   I N V E N T O R Y  `) : console.log('');
+    type === 'reorder' ? console.log(` P R O D U C T  T O  B E  R E O R D E R E D  `) :
+        type === 'inventory' ? console.log(`                I N V E N T O R Y  `) :
+        type === 'lowInventory' ? console.log(`L O W   I N V E N T O R Y  `) : console.log('');
     data = [
             ['Item Id', 'Product Name', 'Price', 'Quantity']
         ],
@@ -131,15 +131,15 @@ function makeOrderSummaryTable(name, qty, price) {
                 width: 15,
                 padding: 0.3
             },
-                width: 25,
-                padding: 0.3
-            },
-        };
-        output = table(data, config);
+            width: 25,
+            padding: 0.3
+        },
+    };
+    output = table(data, config);
     printTable(output);
-    }
-    
-    
+}
+
+
 function makeProductsTable(res) {
     console.log("\n");
     console.log(`      W E L C O M E  T O  B A M A Z O N!!`);

@@ -16,7 +16,7 @@ function Order(id, name, qty, price) {
 
 
 Order.prototype.checkInventory = function (qty, sales) {
-    this.qty > qty ? (message.lowStock(qty), setTimeout(customerReroute, 2000)) :
+    this.qty > qty ? (message.lowStock(qty), setTimeout(customerRedirect, 2000)) :
         (message.confirmOrder(this.name), this.takeOrder(qty, sales));
 };
 
@@ -54,11 +54,11 @@ Order.prototype.updateProduct_Sales = function (sales) {
         function (err, res) {
         }
     );
-    setTimeout(customerReroute, 2000);
+    setTimeout(customerRedirect, 2000);
 };
 
 
-function customerReroute() {
+function customerRedirect() {
     inquirer.prompt([{
             name: "actions",
             type: 'list',
@@ -73,4 +73,4 @@ function customerReroute() {
 
 
 module.exports = Order;
-module.exports.customerReroute = customerReroute;
+module.exports.customerRedirect = customerRedirect;

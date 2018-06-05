@@ -1,11 +1,3 @@
-// function Feedbacks (err){
-//         this.err = err;
-// }
-
-// Feedbacks.prototype.info = function(){
-//     console.log('\x1b[31m', 'ID is invalid. Try again!\n');
-// };
-
 
 //product error/infor
 var info = () => console.log('\x1b[31m', 'That ID does not match any product. Please check the ID and try again!\n');
@@ -14,7 +6,7 @@ var confirmOrder = (name) => console.log("\x1b[34m", `ORDER CONFIRMATION! \nYour
 var goodbye = () => console.log("\x1b[34m", `Thanks for your time. Please come back again.\n`);
 
 //database error
-var dbError = () => console.log('\x1b[31m', 'Something went wrong.\n');
+var dbError = () => console.log('\x1b[31m', 'Something may have gone wrong with connection to database. Please check back later.\n');
 
 //manager messages
 var dupProduct = () => console.log('\x1b[31m', 'Product Already Exist\n');

@@ -16,7 +16,7 @@ function displaySales() {
         var tableType = 'sales';
         err ? message.dbError() :tables.makeSupervisorTable(res, tableType);
     });
-    setTimeout(reroute, 2000);
+    setTimeout(redirect, 2000);
 }
 
 
@@ -44,13 +44,13 @@ function createDepartment() {
                 err ? message.dupDepartment() : 
                 message.addDepartment(res.affectedRows, department.department_name);
             });
-            setTimeout(reroute, 2000);
+            setTimeout(redirect, 2000);
         });
 
 }
 
 
-function reroute() {
+function redirect() {
     inquirer.prompt([{
             name: "actions",
             type: 'list',

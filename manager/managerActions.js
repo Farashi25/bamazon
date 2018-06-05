@@ -1,17 +1,20 @@
 var connection = require('../utilities/db_connection'),
     validator = require('../utilities/dataValidation'),
     inquirer = require('inquirer'),
-    faker = require('faker'),
-    index = require('../index'),
     message = require('../utilities/feedbacks'),
-    tables = require('../utilities/tables');
+    message = require('../utilities/feedbacks'),
+    tables = require('../utilities/tables'),
+    faker = require('faker'),
+    index = require('../index');
+    
+    
 
 
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
         var tableType = 'inventory';
-        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
-                setTimeout(reroute, 2000));
+        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
+                setTimeout(redirect, 2000));
     });
 }
 
@@ -19,8 +22,8 @@ function displayProducts() {
 function displayLowItems() {
     var tableType = 'lowInventory';
     connection.query("SELECT * FROM products WHERE stock_quantity < 20", function (err, res) {
-        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
-                setTimeout(reroute, 2000));
+        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
+                setTimeout(redirect, 2000));
     });
 }
 
@@ -28,7 +31,7 @@ function displayLowItems() {
 function replenishInventory() {
     var tableType = 'inventory';
     connection.query("SELECT * FROM products", function (err, res) {
-        err ? (message.dbError(), reroute()) :(tables.makeManagerTables(res, tableType),
+        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
                 setTimeout(promptManager, 1000));
     });
 
@@ -46,7 +49,7 @@ function promptManager() {
             itemID = parseInt(answer.item_id);
             var tableType = 'reorder';
             connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
-                !res.length ? (message.info(), reroute()) :(tables.makeManagerTables(res,tableType),
+                err ||!res.length ? (message.info(), redirect()) :(tables.makeManagerTables(res,tableType),
                         setTimeout(promptForQuantity, 1000, itemID, res[0].stock_quantity));
             });
 
@@ -72,7 +75,7 @@ function promptForQuantity(id, qty) {
                     err ? message.dbError() : message.confirmReorder();
                 }
             );
-            setTimeout(reroute, 2000);
+            setTimeout(redirect, 2000);
         });
 }
 
@@ -107,12 +110,12 @@ function addNewProduct() {
             connection.query(query, newProduct, function (err, res) {
                 err ? message.dupProduct() : message.addProduct(res.affectedRows, newProduct.product_name);
             });
-            setTimeout(reroute, 2000);
+            setTimeout(redirect, 2000);
         });
 }
 
 
-function reroute() {
+function redirect() {
     inquirer.prompt([{
             name: "actions",
             type: 'list',

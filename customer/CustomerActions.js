@@ -9,11 +9,9 @@ var Order = require('./orderProcessor'),
 
 
 function displayProducts() {
-    console.log("Selecting all products...\n");
     connection.query("SELECT * FROM products", function (err, res) {
-        if (err) throw err;
-        tables.makeProductsTable(res);
-        confirmPurchase();
+        err ||!res.length ? (message.dbError(), Order.customerRedirect()) : (tables.makeProductsTable(res),
+            confirmPurchase());
     });
 }
 
@@ -39,8 +37,8 @@ function getProductID() {
         .then(function (answer) {
             itemID = parseInt(answer.item_id);
             connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
-                !res.length ? (message.info(), Order.customerReroute()) : (tables.makeProductTable(res),
-                    setTimeout(promptForQuantity, 1000, res));
+                err ||!res.length ? (message.info(), Order.customerRedirect()) : (tables.makeProductTable(res),
+                    setTimeout(promptForQuantity, 2000, res));
             });
 
         });
