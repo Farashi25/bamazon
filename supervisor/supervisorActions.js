@@ -11,7 +11,7 @@ function displaySales() {
     var query = `SELECT departments.department_id, departments.department_name,departments.over_head_costs, products.product_sales
     FROM departments
     LEFT JOIN products ON departments.department_name = products.department_name
-    ORDER BY products.product_sales DESC`;
+    GROUP BY departments.department_id ORDER BY products.product_sales DESC`;
     connection.query(query, function (err, res) {
         var tableType = 'sales';
         err ? message.dbError() :tables.makeSupervisorTable(res, tableType);
@@ -46,7 +46,6 @@ function createDepartment() {
             });
             setTimeout(redirect, 2000);
         });
-
 }
 
 

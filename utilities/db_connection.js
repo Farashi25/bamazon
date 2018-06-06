@@ -7,7 +7,6 @@ var mysql = require('mysql'),
     faker = require('faker');
 
 var connection = mysql.createConnection({
-    multipleStatements: true, //this for testing only. Will not use in real life
     host: "localhost",
     // Your port; if not 3306
     port: 3306,
@@ -15,11 +14,11 @@ var connection = mysql.createConnection({
     user: "root",
     // Your password
     password: "root",
-    database: "bamazon_DB",
+    database: "bamazon_DB", //You can replace 'bamazon_DB' with your mysql database to run the app on your local environment.
     socketPath: '/Applications/MAMP/tmp/mysql/mysql.sock'
 });
 
-
+//This function prompts the user for confirmation before seeding the database or redirect the user back to the profile page.
 function confirmAction() {
     confirm("Please confirm. Do you really want to seed database?")
         .then(function confirmed() {
@@ -29,7 +28,7 @@ function confirmAction() {
         });
 }
 
-
+//This function prompts for password and authenticates user input.
 function authenticateUser() {
     var itemID;
     inquirer.prompt([{
@@ -42,11 +41,13 @@ function authenticateUser() {
         });
 }
 
+
+//Drops the products table if there is any and create a new one
 function createProductsTable() {
     console.log('LOGS.');
     console.log('=============================');
     connection.query('DROP TABLE IF EXISTS products', function (err, res) {
-        err ? (message.dbError(),index.selectRole()): console.log('Creating products table...');
+        err ? (message.dbError(), index.selectRole()) : console.log('Creating products table...');
     });
     var query = `CREATE TABLE products (
         item_id INT NOT NULL AUTO_INCREMENT,
@@ -64,9 +65,11 @@ function createProductsTable() {
     });
 }
 
+
+//Drops the departments table if there is any and create a new one
 function createDepartmentTable() {
     connection.query('DROP TABLE IF EXISTS departments', function (err, res) {
-        err ? (message.dbError(),index.selectRole()): console.log('Creating department table...');
+        err ? (message.dbError(), index.selectRole()) : console.log('Creating department table...');
     });
     var query = `CREATE TABLE departments (
         department_id INT NOT NULL AUTO_INCREMENT,
@@ -82,66 +85,59 @@ function createDepartmentTable() {
 }
 
 
+//Generate ten(10) new products along with their departments
 function generateData() {
     console.log('Generating data....');
-    var prodTracker = [],
-        departTracker = [];
-    prodData = [],
-        departData = [];
-    for (var i = 0; prodTracker.length < 11; i++) {
-        var product = {
-            product_name: faker.fake("{{commerce.productName}}"),
-            department_name: faker.fake("{{commerce.department}}"),
-            price: faker.fake("{{commerce.price}}"),
-            stock_quantity: Math.floor((Math.random() * 50) + 10)
-        };
-        if (prodTracker.indexOf(product.product_name) === -1) {
-            prodTracker.push(product.product_name);
-            prodData.push(product);
+    var prodTracker = [], departTracker = [],
+        products = [], departments = [];
+    for (var i = 0; prodTracker.length < 100; i++) {
+    //create new product
+        var product_name = faker.fake("{{commerce.productName}}"),
+            department_name = faker.fake("{{commerce.department}}"),
+            price = faker.fake("{{commerce.price}}"),
+            stock_quantity = Math.floor((Math.random() * 50) + 5);
+        
+            // validate product is not a duplicate
+        if (prodTracker.indexOf(product_name) === -1) {
+            var prodRow = [];
+            prodTracker.push(product_name);
+            prodRow.push(product_name, department_name, price, stock_quantity);
+            products.push(prodRow);
 
-            var department = {
-                department_name: product.department_name,
-                over_head_costs: Math.floor((Math.random() * 5000) + 1000)
-            };
-            if (departTracker.indexOf(department.department_name) === -1) {
-                departTracker.push(department.department_name);
-                departData.push(department);
+            //create new department
+            var depart_name = department_name,
+                over_head_costs = Math.floor((Math.random() * 5000) + 1000);
+
+          // validate department is not a duplicate
+            if (departTracker.indexOf(depart_name) === -1) {
+                var departRow = [];
+                departTracker.push(depart_name);
+                departRow.push(depart_name, over_head_costs);
+                departments.push(departRow);
             }
         }
     }
-    seedDatabase(prodData, departData);
+    seedDatabase(products, departments);
 }
 
 
-function seedDatabase(prodData, departData) {
-    console.log('Seeding Database...')
-    var departmentQuery;
-prodData.forEach(dataRow => {
-    var productQuery = 'INSERT INTO products SET ?';
-    connection.query(productQuery, dataRow, function (err, res) {
-        if(err){
-            message.dbError();
-            index.selectRole();
-        }
-    }); 
-});
+function seedDatabase(products, departments) {
+    console.log('Seeding Database...');
+    //create and send product query to the database
+    var prodductQuery = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?";
+    connection.query(prodductQuery, [products], function (err, res) {
+       err?(message.dbError(),index.selectRole()):console.log('Products are created.....');
 
-departData.forEach(dataRow => {
-    departmentQuery = 'INSERT INTO departments SET ?',
-    connection.query(departmentQuery, dataRow, function (err, res) {
-        if(err){
-            message.dbError();
-            index.selectRole();
-        }
-    }); 
-});
-
-console.log('Success! Seeding completed!');
-console.log('=============================\n');
-index.selectRole();
+    //create and send department query to the database       
+        var departmentQuery = "INSERT INTO departments (department_name, over_head_costs) VALUES ?";
+        connection.query(departmentQuery, [departments], function (err, res) {
+            err?(message.dbError(),index.selectRole()):console.log('Products are created.....');
+        });
+    });
+    console.log('Success! Seeding completed!');
+    console.log('=============================\n');
+    index.selectRole();
 }
-
-
 
 module.exports = connection;
 module.exports.confirmAction = confirmAction;

@@ -21,8 +21,8 @@ function displayProducts() {
 
 function displayLowItems() {
     var tableType = 'lowInventory';
-    connection.query("SELECT * FROM products WHERE stock_quantity < 20", function (err, res) {
-        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
+    connection.query("SELECT * FROM products WHERE stock_quantity < 10", function (err, res) {
+        err||!res.length ?  (message.inventoryInfo(), redirect()) :(tables.makeManagerTables(res, tableType),
                 setTimeout(redirect, 2000));
     });
 }
@@ -34,7 +34,6 @@ function replenishInventory() {
         err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
                 setTimeout(promptManager, 1000));
     });
-
 }
 
 
@@ -69,8 +68,7 @@ function promptForQuantity(id, qty) {
                     },
                     {
                         item_id: id
-                    }
-                ],
+                    }],
                 function (err, res) {
                     err ? message.dbError() : message.confirmReorder();
                 }

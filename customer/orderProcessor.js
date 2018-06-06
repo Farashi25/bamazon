@@ -34,27 +34,25 @@ Order.prototype.updateStock_quantity = function (qty, sales) {
             },
             {
                 item_id: this.id
-            }
-        ],
+            }],
         function (err, res) {
+            err ? (message.dbError(), customerRedirect()) : this.updateProduct_Sales(sales);
         }
     );
-    this.updateProduct_Sales(sales);
+
 };
 
 
 Order.prototype.updateProduct_Sales = function (sales) {
     var query = connection.query("UPDATE products SET ? WHERE ?", [{
-                product_sales: sales + Number(this.sales)
-            },
-            {
-                item_id: this.id
-            }
-        ],
+            product_sales: sales + Number(this.sales)
+        }, {
+            item_id: this.id
+        }],
         function (err, res) {
+            err ? (message.dbError(), customerRedirect()) : setTimeout(customerRedirect, 2000);
         }
     );
-    setTimeout(customerRedirect, 2000);
 };
 
 

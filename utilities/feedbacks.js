@@ -12,6 +12,7 @@ var dbError = () => console.log('\x1b[31m', 'Something may have gone wrong with 
 var dupProduct = () => console.log('\x1b[31m', 'Product Already Exist\n');
 var addProduct = (row, name) => console.log("\x1b[32m", `${row} product name: ${name} to inventory\n`);
 var confirmReorder = () => console.log("\x1b[32m", 'SUCCESS!! Reorder is processed\n');
+var inventoryInfo = () => console.log("\x1b[32m", 'Inventory is fully stocked.\n');
 
 //supervisor messages
 var dupDepartment = () => console.log('\x1b[31m', 'Department Already Exist\n');
@@ -25,6 +26,7 @@ module.exports = {
     dupProduct: dupProduct,
     addProduct: addProduct,
     confirmOrder: confirmOrder,
+    inventoryInfo:inventoryInfo,
     dupDepartment: dupDepartment,
     addDepartment: addDepartment,
     confirmReorder: confirmReorder

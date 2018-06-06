@@ -3,7 +3,7 @@
  var validateNumber = input => validate(input) && !isNaN(parseInt(input));
  var validatePositive = input => validateNumber(input) && input > 0;
 
-//Validate user input is not empty and is a word
+//Validate user input is not empty and is a string
  var validateWord = input => validate(input) && isNaN(parseInt(input));
 
  //Validate user password to seed database
