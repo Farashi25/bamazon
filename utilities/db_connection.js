@@ -88,27 +88,29 @@ function createDepartmentTable() {
 //Generate ten(10) new products along with their departments
 function generateData() {
     console.log('Generating data....');
-    var prodTracker = [], departTracker = [],
-        products = [], departments = [];
-    for (var i = 0; prodTracker.length < 100; i++) {
-    //create new product
+    var prodTracker = [],
+        departTracker = [],
+        products = [],
+        departments = [];
+    for (var i = 0; prodTracker.length < 10; i++) {
+        //create new product row
         var product_name = faker.fake("{{commerce.productName}}"),
             department_name = faker.fake("{{commerce.department}}"),
             price = faker.fake("{{commerce.price}}"),
-            stock_quantity = Math.floor((Math.random() * 50) + 5);
-        
-            // validate product is not a duplicate
+            stock_quantity = Math.floor((Math.random() * 15) + 1);
+
+        // validate product is not a duplicate 
         if (prodTracker.indexOf(product_name) === -1) {
             var prodRow = [];
             prodTracker.push(product_name);
             prodRow.push(product_name, department_name, price, stock_quantity);
             products.push(prodRow);
 
-            //create new department
+            //create new department row
             var depart_name = department_name,
                 over_head_costs = Math.floor((Math.random() * 5000) + 1000);
 
-          // validate department is not a duplicate
+            // validate department is not a duplicate
             if (departTracker.indexOf(depart_name) === -1) {
                 var departRow = [];
                 departTracker.push(depart_name);
@@ -126,17 +128,18 @@ function seedDatabase(products, departments) {
     //create and send product query to the database
     var prodductQuery = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?";
     connection.query(prodductQuery, [products], function (err, res) {
-       err?(message.dbError(),index.selectRole()):console.log('Products are created.....');
+        err ? (message.dbError(), index.selectRole()) : console.log('Products are created');
 
-    //create and send department query to the database       
+        //create and send department query to the database       
         var departmentQuery = "INSERT INTO departments (department_name, over_head_costs) VALUES ?";
         connection.query(departmentQuery, [departments], function (err, res) {
-            err?(message.dbError(),index.selectRole()):console.log('Products are created.....');
+            err ? (message.dbError(), index.selectRole()) : console.log('Departments are created');
+            console.log('Success! Seeding database is completed!');
+            console.log('=============================\n');
         });
     });
-    console.log('Success! Seeding completed!');
-    console.log('=============================\n');
-    index.selectRole();
+
+    setTimeout(index.selectRole, 2000);
 }
 
 module.exports = connection;

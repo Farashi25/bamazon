@@ -23,35 +23,31 @@ Order.prototype.checkInventory = function (qty, sales) {
 
 Order.prototype.takeOrder = function (qty, sales) {
     tables.makeOrderSummaryTable(this.name, this.qty, this.price);
-    this.updateStock_quantity(qty, sales);
+    this.updateStockQuantity(qty, sales);
 };
 
 
-Order.prototype.updateStock_quantity = function (qty, sales) {
+Order.prototype.updateStockQuantity = function (qty, sales) {
     var newStock_Quantity = qty - this.qty;
     var query = connection.query("UPDATE products SET ? WHERE ?", [{
                 stock_quantity: newStock_Quantity
             },
             {
                 item_id: this.id
-            }],
-        function (err, res) {
-            err ? (message.dbError(), customerRedirect()) : this.updateProduct_Sales(sales);
-        }
+            }
+        ],
+        (err, res) => err ? (message.dbError(), customerRedirect()) : this.updateProductSales(sales)
     );
-
 };
 
 
-Order.prototype.updateProduct_Sales = function (sales) {
+Order.prototype.updateProductSales = function (sales) {
     var query = connection.query("UPDATE products SET ? WHERE ?", [{
             product_sales: sales + Number(this.sales)
         }, {
             item_id: this.id
         }],
-        function (err, res) {
-            err ? (message.dbError(), customerRedirect()) : setTimeout(customerRedirect, 2000);
-        }
+        (err, res) => err ? (message.dbError(), customerRedirect()) : setTimeout(customerRedirect, 2000)
     );
 };
 
@@ -63,10 +59,9 @@ function customerRedirect() {
             choices: ['PURCHASE A PRODUCT', 'EXIT STORE'],
             message: "What will you like to do?"
         }])
-        .then(function (answer) {
-            answer.actions === 'PURCHASE A PRODUCT' ? customer.displayProducts() :
-                (message.goodbye(), index.selectRole())
-        });
+        .then(answer => answer.actions === 'PURCHASE A PRODUCT' ? customer.displayProducts() :
+            (message.goodbye(), index.selectRole())
+        );
 }
 
 

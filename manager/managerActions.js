@@ -21,7 +21,7 @@ function displayProducts() {
 
 function displayLowItems() {
     var tableType = 'lowInventory';
-    connection.query("SELECT * FROM products WHERE stock_quantity < 10", function (err, res) {
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
         err||!res.length ?  (message.inventoryInfo(), redirect()) :(tables.makeManagerTables(res, tableType),
                 setTimeout(redirect, 2000));
     });
@@ -41,7 +41,7 @@ function promptManager() {
     var itemID;
     inquirer.prompt([{
             name: "item_id",
-            message: "Enter the ID of the product you will like to replenish?",
+            message: "Enter the ID of the product you will like to replenish.",
             validate: validator.validatePositive
         }])
         .then(function (answer) {
@@ -69,9 +69,7 @@ function promptForQuantity(id, qty) {
                     {
                         item_id: id
                     }],
-                function (err, res) {
-                    err ? message.dbError() : message.confirmReorder();
-                }
+                (err, res) => err ? message.dbError() : message.confirmReorder()
             );
             setTimeout(redirect, 2000);
         });
