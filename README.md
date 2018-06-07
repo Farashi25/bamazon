@@ -17,7 +17,7 @@ The app has 4 user Views: Customer, Manager, Supervisor and Admin
 ![Supervisor](/images/supervisor.gif)
 
 ## Admin View:
-![Admin](/images/seedingDatabase.gif)
+![Admin](/images/admin.gif)
 
 ## Defendency npm packages:
 * faker
