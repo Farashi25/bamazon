@@ -19,7 +19,7 @@ The app has 4 user Views: **Customer**, **Manager**, **Supervisor** and **Admin*
 ### Admin View
 ![Admin](/images/admin.gif)
 
-### Defendency npm packages:
+### Defendency packages:
 * faker
 * inquirer
 * inquirer-confirm

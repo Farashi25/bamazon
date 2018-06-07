@@ -7,7 +7,7 @@ var Order = require('./orderProcessor'),
     validator = require('../utilities/dataValidation'),
     connection = require('../utilities/db_connection');
 
-
+//Query database for all products
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
         err ||!res.length ? (message.dbError(), Order.customerRedirect()) : (tables.makeProductsTable(res),
@@ -15,7 +15,7 @@ function displayProducts() {
     });
 }
 
-
+//Confirm user wants to proceed with purchase or exit
 function confirmPurchase() {
     confirm("Please confirm. Do you still want to buy a product?")
         .then(function confirmed() {
@@ -26,7 +26,7 @@ function confirmPurchase() {
         });
 }
 
-
+//Prompts the customer for product ID and query the database 
 function getProductID() {
     var itemID;
     inquirer.prompt([{
@@ -44,7 +44,7 @@ function getProductID() {
         });
 }
 
-
+//Prompts the customer for quantity and starts the order processing
 function promptForQuantity(res) {
     var item = res[0];
     inquirer.prompt([{
@@ -53,6 +53,7 @@ function promptForQuantity(res) {
             validate: validator.validatePositive
         }])
         .then(function (answer) {
+            //create a new order and pass down product ID, name, qunatity and price for processing
             var order = new Order(item.item_id, item.product_name, Number(answer.qty), item.price);
             order.checkInventory(item.stock_quantity, item.product_sales);
 

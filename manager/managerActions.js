@@ -9,7 +9,7 @@ var connection = require('../utilities/db_connection'),
     
     
 
-
+//displays all products for manager
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
         var tableType = 'inventory';
@@ -18,7 +18,7 @@ function displayProducts() {
     });
 }
 
-
+//displays low inventory products for manager
 function displayLowItems() {
     var tableType = 'lowInventory';
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
@@ -27,7 +27,7 @@ function displayLowItems() {
     });
 }
 
-
+//displays all products for replenishing
 function replenishInventory() {
     var tableType = 'inventory';
     connection.query("SELECT * FROM products", function (err, res) {
@@ -36,7 +36,7 @@ function replenishInventory() {
     });
 }
 
-
+//prompts manager for product ID and query the data base
 function promptManager() {
     var itemID;
     inquirer.prompt([{
@@ -55,7 +55,7 @@ function promptManager() {
         });
 }
 
-
+//prompts for quantity to be added
 function promptForQuantity(id, qty) {
     inquirer.prompt([{
             name: "quantity",
@@ -75,7 +75,7 @@ function promptForQuantity(id, qty) {
         });
 }
 
-
+//Prompts manager for product details to be added to the database
 function addNewProduct() {
     var newProduct;
     inquirer.prompt([{
@@ -104,13 +104,14 @@ function addNewProduct() {
             };
             var query = 'INSERT INTO products SET ?';
             connection.query(query, newProduct, function (err, res) {
+                //if error, display error message if not display success message
                 err ? message.dupProduct() : message.addProduct(res.affectedRows, newProduct.product_name);
             });
             setTimeout(redirect, 2000);
         });
 }
 
-
+//Redirect manager to other functions
 function redirect() {
     inquirer.prompt([{
             name: "actions",

@@ -2,7 +2,7 @@ var index = require('../index'),
     inquirer = require('inquirer'),
     customerRole = require('./customerActions');
 
-
+//This function prompts the user for options
 var displayOptions = function () {
     inquirer.prompt([{
             name: "option",
