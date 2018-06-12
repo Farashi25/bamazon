@@ -3,7 +3,7 @@ var index = require('../index'),
     supervisorRole = require('./supervisorActions');
 
 
-
+//Prompts supervisor actions
 var displayOptions = function () {
     inquirer.prompt([{
             name: "option",

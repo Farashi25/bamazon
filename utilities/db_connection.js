@@ -1,10 +1,11 @@
-var mysql = require('mysql'),
-    validator = require('../utilities/dataValidation'),
+var validator = require('../utilities/dataValidation'),
+    inquirer = require('inquirer'),
+    inquirer = require('inquirer'),
     confirm = require('inquirer-confirm'),
     message = require('../utilities/feedbacks'),
     index = require('../index'),
-    inquirer = require('inquirer'),
-    faker = require('faker');
+    faker = require('faker'),
+    mysql = require('mysql');
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -30,7 +31,6 @@ function confirmAction() {
 
 //This function prompts for password and authenticates user input.
 function authenticateUser() {
-    var itemID;
     inquirer.prompt([{
             name: "password",
             message: "Enter password (password)",
@@ -85,13 +85,10 @@ function createDepartmentTable() {
 }
 
 
-//Generate ten(10) new products along with their departments
+//Generates ten(10) new products along with their departments
 function generateData() {
     console.log('Generating data....');
-    var prodTracker = [],
-        departTracker = [],
-        products = [],
-        departments = [];
+    var prodTracker = [], departTracker = [], products = [], departments = [];
     for (var i = 0; prodTracker.length < 10; i++) {
         //create new product row
         var product_name = faker.fake("{{commerce.productName}}"),

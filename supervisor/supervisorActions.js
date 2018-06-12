@@ -6,7 +6,7 @@ var connection = require('../utilities/db_connection'),
     faker = require('faker'),
     index = require('../index');
 
-
+//Display all sales by department
 function displaySales() {
     var query = `SELECT departments.department_id, departments.department_name,departments.over_head_costs, products.product_sales
     FROM departments
@@ -19,7 +19,7 @@ function displaySales() {
     setTimeout(redirect, 2000);
 }
 
-
+//Prompts user for input to create department with overhead cost
 function createDepartment() {
     inquirer.prompt([{
                 name: "department",
@@ -48,7 +48,7 @@ function createDepartment() {
         });
 }
 
-
+//Redirects supervisor 
 function redirect() {
     inquirer.prompt([{
             name: "actions",
