@@ -3,7 +3,6 @@ var connection = require('../utilities/db_connection'),
     validator = require('../utilities/dataValidation'),
     message = require('../utilities/feedbacks'),
     tables = require('../utilities/tables'),
-    faker = require('faker'),
     index = require('../index');
 
 //Display all sales by department
