@@ -4,17 +4,16 @@ var connection = require('../utilities/db_connection'),
     message = require('../utilities/feedbacks'),
     message = require('../utilities/feedbacks'),
     tables = require('../utilities/tables'),
-    faker = require('faker'),
     index = require('../index');
-    
-    
+
+
 
 //displays all products for manager
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
         var tableType = 'inventory';
-        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
-                setTimeout(redirect, 2000));
+        err ? (message.dbError(), redirect()) : (tables.makeManagerTables(res, tableType),
+            setTimeout(redirect, 2000));
     });
 }
 
@@ -22,8 +21,8 @@ function displayProducts() {
 function displayLowItems() {
     var tableType = 'lowInventory';
     connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
-        err||!res.length ?  (message.inventoryInfo(), redirect()) :(tables.makeManagerTables(res, tableType),
-                setTimeout(redirect, 2000));
+        err || !res.length ? (message.inventoryInfo(), redirect()) : (tables.makeManagerTables(res, tableType),
+            setTimeout(redirect, 2000));
     });
 }
 
@@ -31,8 +30,8 @@ function displayLowItems() {
 function replenishInventory() {
     var tableType = 'inventory';
     connection.query("SELECT * FROM products", function (err, res) {
-        err ? (message.dbError(), redirect()) :(tables.makeManagerTables(res, tableType),
-                setTimeout(promptManager, 1000));
+        err ? (message.dbError(), redirect()) : (tables.makeManagerTables(res, tableType),
+            setTimeout(promptManager, 1000));
     });
 }
 
@@ -47,9 +46,14 @@ function promptManager() {
         .then(function (answer) {
             itemID = parseInt(answer.item_id);
             var tableType = 'reorder';
-            connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
-                err ||!res.length ? (message.info(), redirect()) :(tables.makeManagerTables(res,tableType),
-                        setTimeout(promptForQuantity, 1000, itemID, res[0].stock_quantity));
+            connection.query(`SELECT * FROM products WHERE item_id =${itemID}`, function (err, res) {
+                if (err || !res.length) {
+                    message.info();
+                    redirect();
+                } else {
+                    tables.makeManagerTables(res, tableType);
+                    setTimeout(promptForQuantity, 1000, itemID, res[0].stock_quantity);
+                }
             });
 
         });
@@ -63,13 +67,14 @@ function promptForQuantity(id, qty) {
             validate: validator.validatePositive
         }])
         .then(function (answer) {
-            var query = connection.query("UPDATE products SET ? WHERE ?", [{
+            connection.query("UPDATE products SET ? WHERE ?", [{
                         stock_quantity: qty + Number(answer.quantity)
                     },
                     {
                         item_id: id
-                    }],
-                (err, res) => err ? message.dbError() : message.confirmReorder()
+                    }
+                ],
+                (err) => err ? message.dbError() : message.confirmReorder()
             );
             setTimeout(redirect, 2000);
         });

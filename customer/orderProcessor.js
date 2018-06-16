@@ -16,8 +16,13 @@ function Order(id, name, qty, price) {
 
 
 Order.prototype.checkInventory = function (qty, sales) {
-    this.qty > qty ? (message.lowStock(qty), setTimeout(customerRedirect, 2000)) :
-        (message.confirmOrder(this.name), this.takeOrder(qty, sales));
+    if (this.qty > qty) {
+        message.lowStock(qty);
+        setTimeout(customerRedirect, 2000);
+    } else {
+        message.confirmOrder(this.name);
+        this.takeOrder(qty, sales);
+    }
 };
 
 
@@ -29,25 +34,25 @@ Order.prototype.takeOrder = function (qty, sales) {
 
 Order.prototype.updateStockQuantity = function (qty, sales) {
     var newStock_Quantity = qty - this.qty;
-    var query = connection.query("UPDATE products SET ? WHERE ?", [{
+    connection.query("UPDATE products SET ? WHERE ?", [{
                 stock_quantity: newStock_Quantity
             },
             {
                 item_id: this.id
             }
         ],
-        (err, res) => err ? (message.dbError(), customerRedirect()) : this.updateProductSales(sales)
+        (err) => err ? (message.dbError(), customerRedirect()) : this.updateProductSales(sales)
     );
 };
 
 
 Order.prototype.updateProductSales = function (sales) {
-    var query = connection.query("UPDATE products SET ? WHERE ?", [{
+    connection.query("UPDATE products SET ? WHERE ?", [{
             product_sales: sales + Number(this.sales)
         }, {
             item_id: this.id
         }],
-        (err, res) => err ? (message.dbError(), customerRedirect()) : setTimeout(customerRedirect, 2000)
+        (err) => err ? (message.dbError(), customerRedirect()) : setTimeout(customerRedirect, 2000)
     );
 };
 
@@ -60,7 +65,8 @@ function customerRedirect() {
             message: "What will you like to do?"
         }])
         .then(answer => answer.actions === 'PURCHASE A PRODUCT' ? customer.displayProducts() :
-            (message.goodbye(), index.selectRole())
+            (message.goodbye(),
+                index.selectRole())
         );
 }
 

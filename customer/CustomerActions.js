@@ -10,8 +10,13 @@ var Order = require('./orderProcessor'),
 //Query database for all products
 function displayProducts() {
     connection.query("SELECT * FROM products", function (err, res) {
-        err ||!res.length ? (message.dbError(), Order.customerRedirect()) : (tables.makeProductsTable(res),
-            confirmPurchase());
+        if (err || !res.length) {
+            message.dbError();
+            Order.customerRedirect();
+        } else {
+            tables.makeProductsTable(res);
+            confirmPurchase();
+        }
     });
 }
 
@@ -37,8 +42,13 @@ function getProductID() {
         .then(function (answer) {
             itemID = parseInt(answer.item_id);
             connection.query(`SELECT * FROM products WHERE item_id = ${itemID}`, function (err, res) {
-                err ||!res.length ? (message.info(), Order.customerRedirect()) : (tables.makeProductTable(res),
-                    setTimeout(promptForQuantity, 2000, res));
+                if (err || !res.length) {
+                    message.info();
+                    Order.customerRedirect();
+                } else {
+                    tables.makeProductTable(res);
+                    setTimeout(promptForQuantity, 2000, res);
+                }
             });
 
         });
@@ -56,7 +66,6 @@ function promptForQuantity(res) {
             //create a new order and pass down product ID, name, qunatity and price for processing
             var order = new Order(item.item_id, item.product_name, Number(answer.qty), item.price);
             order.checkInventory(item.stock_quantity, item.product_sales);
-
         });
 }
 

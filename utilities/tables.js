@@ -56,12 +56,12 @@ function makeManagerTables(res, type) {
     data = [
             ['Item Id', 'Product Name', 'Price', 'Quantity']
         ],
-        res.forEach(product => {
+        res.forEach(p => {
             var dataRow = [];
-            dataRow.push(product.item_id);
-            dataRow.push(product.product_name);
-            dataRow.push((Number(product.price)).toFixed(2));
-            dataRow.push(product.stock_quantity);
+            dataRow.push(p.item_id);
+            dataRow.push(p.product_name);
+            dataRow.push((Number(p.price)).toFixed(2));
+            dataRow.push(p.stock_quantity);
             data.push(dataRow);
         });
     config = {
@@ -146,11 +146,9 @@ function makeProductsTable(res) {
     data = [
         ['Item Id', 'Product Name', 'Price']
     ];
-    res.forEach(product => {
+    res.forEach(p => {
         var dataRow = [];
-        dataRow.push(product.item_id);
-        dataRow.push(product.product_name);
-        dataRow.push((Number(product.price)).toFixed(2));
+        dataRow.push(p.item_id, p.product_name, (Number(p.price)).toFixed(2));
         data.push(dataRow);
     });
     config = {

@@ -41,8 +41,7 @@ function createDepartment() {
             };
             var query = 'INSERT INTO departments SET ?';
             connection.query(query, department, function (err, res) {
-                err ? message.dupDepartment() : 
-                message.addDepartment(res.affectedRows, department.department_name);
+                err ? message.dupDepartment() : message.addDepartment(res.affectedRows, department.department_name);
             });
             setTimeout(redirect, 2000);
         });
