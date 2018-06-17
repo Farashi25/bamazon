@@ -22,6 +22,7 @@ function selectRole() {
             } else if (answer.user === 'SEED DATABASE') {
                 connection.confirmAction();
             } else {
+                connection.end();
                 console.log('You Are Signed Out!');
                 process.exit();
             }
@@ -29,6 +30,5 @@ function selectRole() {
 }
 
 selectRole();
-
 
 module.exports.selectRole = selectRole;
